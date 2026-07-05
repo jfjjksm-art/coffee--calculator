@@ -1,10 +1,14 @@
-// app-pwa.jsx — production full-screen shell (no device frame, no tweaks)
-const { useState: useStatePWA, useEffect: useEffectPWA } = React;
+// App.jsx — production full-screen shell (no device frame, no tweaks)
+import { useState, useEffect } from 'react';
+import { Icon } from './shared';
+import { MilkCoffee } from './milk-coffee';
+import { IcedPourOver } from './iced-pourover';
 
 const PWA_TABS = [
   { id: 'milk', label: '奶咖配方', icon: 'cup' },
   { id: 'iced', label: '冰手冲',   icon: 'ice' },
 ];
+const VALID_TAB_IDS = PWA_TABS.map(t => t.id);
 
 function PWATabBar({ tab, setTab }) {
   return (
@@ -41,9 +45,12 @@ function PWATabBar({ tab, setTab }) {
   );
 }
 
-function PWAApp() {
-  const [tab, setTab] = useStatePWA(() => localStorage.getItem('cc.tab') || 'milk');
-  useEffectPWA(() => { localStorage.setItem('cc.tab', tab); }, [tab]);
+export default function App() {
+  const [tab, setTab] = useState(() => {
+    const saved = localStorage.getItem('cc.tab');
+    return VALID_TAB_IDS.includes(saved) ? saved : 'milk';
+  });
+  useEffect(() => { localStorage.setItem('cc.tab', tab); }, [tab]);
 
   return (
     <div style={{
@@ -68,5 +75,3 @@ function PWAApp() {
     </div>
   );
 }
-
-ReactDOM.createRoot(document.getElementById('root')).render(<PWAApp />);

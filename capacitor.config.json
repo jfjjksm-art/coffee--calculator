@@ -1,0 +1,8 @@
+{
+  "appId": "com.shenmin.coffeecalc",
+  "appName": "咖啡计算器",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#F6F0E4"
+  }
+}

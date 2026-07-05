@@ -1,1 +1,11 @@
 .DS_Store
+node_modules
+dist
+dev-dist
+
+# Capacitor android/ native project IS committed (per plan) so CI doesn't
+# need to regenerate it — only its own build output is ignored.
+android/app/build
+android/build
+android/.gradle
+android/local.properties

@@ -1,9 +1,9 @@
 // shared.jsx — theme maps, icons, primitive UI for the coffee calculator
-const { useState, useEffect, useRef } = React;
+import { useState, useEffect, useRef } from 'react';
 
 // ── Palettes ───────────────────────────────────────────────
 // Each palette is a flat token map applied as CSS variables on the device root.
-const PALETTES = {
+export const PALETTES = {
   '焦糖金': {
     bg: '#F6F0E4', bgWave: 'rgba(201,154,63,0.16)',
     card: '#FFFFFF', cardBorder: 'rgba(120,92,40,0.09)',
@@ -42,20 +42,20 @@ const PALETTES = {
   },
 };
 
-const FONTS = {
+export const FONTS = {
   '默认': { cjk: "'Noto Sans SC', system-ui, sans-serif", num: "'Sora', system-ui, sans-serif", numWeight: 700 },
   '圆润': { cjk: "'Noto Sans SC', system-ui, sans-serif", num: "'Baloo 2', system-ui, sans-serif", numWeight: 700 },
   '等宽': { cjk: "'Noto Sans SC', system-ui, sans-serif", num: "'Space Mono', monospace", numWeight: 700 },
 };
 
-const fmt = (n, d = 0) => {
+export const fmt = (n, d = 0) => {
   if (!isFinite(n)) return '—';
   const r = Number(n.toFixed(d));
   return r.toLocaleString('en-US', { maximumFractionDigits: d, minimumFractionDigits: 0 });
 };
 
 // ── Icons (simple line glyphs) ─────────────────────────────
-function Icon({ name, size = 24, stroke = 'currentColor', sw = 1.9, fill = 'none' }) {
+export function Icon({ name, size = 24, stroke = 'currentColor', sw = 1.9, fill = 'none' }) {
   const p = { fill: 'none', stroke, strokeWidth: sw, strokeLinecap: 'round', strokeLinejoin: 'round' };
   const paths = {
     cup: <g><path {...p} d="M5 9h12v5a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5V9Z"/><path {...p} d="M17 10h2.2a2.2 2.2 0 0 1 0 4.4H17"/><path {...p} d="M8 3c-.6 1 .6 1.6 0 2.6M12 3c-.6 1 .6 1.6 0 2.6"/></g>,
@@ -72,7 +72,7 @@ function Icon({ name, size = 24, stroke = 'currentColor', sw = 1.9, fill = 'none
 }
 
 // ── Card ────────────────────────────────────────────────────
-function Card({ children, style = {}, pad = 18 }) {
+export function Card({ children, style = {}, pad = 18 }) {
   return (
     <div style={{
       background: 'var(--card)', border: '1px solid var(--card-border)',
@@ -84,7 +84,7 @@ function Card({ children, style = {}, pad = 18 }) {
 }
 
 // Section label like "1. 选杯型"
-function SectionLabel({ index, children, right }) {
+export function SectionLabel({ index, children, right }) {
   return (
     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
@@ -97,7 +97,7 @@ function SectionLabel({ index, children, right }) {
 }
 
 // Selectable chip
-function Chip({ active, onClick, children, sub }) {
+export function Chip({ active, onClick, children, sub }) {
   return (
     <button onClick={onClick} style={{
       appearance: 'none', cursor: 'pointer', border: 'none',
@@ -115,7 +115,7 @@ function Chip({ active, onClick, children, sub }) {
 }
 
 // Segmented control
-function Segmented({ value, options, onChange }) {
+export function Segmented({ value, options, onChange }) {
   return (
     <div style={{ display: 'flex', background: 'var(--track)', borderRadius: 13, padding: 3, gap: 3 }}>
       {options.map(o => {
@@ -139,7 +139,7 @@ function Segmented({ value, options, onChange }) {
 }
 
 // Slider with bubble value
-function Slider({ value, min, max, step, onChange, format }) {
+export function Slider({ value, min, max, step, onChange, format }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div style={{ position: 'relative', padding: '4px 0' }}>
@@ -155,7 +155,7 @@ function Slider({ value, min, max, step, onChange, format }) {
 }
 
 // Stepper
-function Stepper({ value, min, max, step, onChange, unit }) {
+export function Stepper({ value, min, max, step, onChange, unit }) {
   const dec = () => onChange(Math.max(min, Math.round((value - step) * 100) / 100));
   const inc = () => onChange(Math.min(max, Math.round((value + step) * 100) / 100));
   const btn = { width: 40, height: 40, borderRadius: 12, border: 'none', cursor: 'pointer',
@@ -171,5 +171,3 @@ function Stepper({ value, min, max, step, onChange, unit }) {
     </div>
   );
 }
-
-Object.assign(window, { PALETTES, FONTS, fmt, Icon, Card, SectionLabel, Chip, Segmented, Slider, Stepper });

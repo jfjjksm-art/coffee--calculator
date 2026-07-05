@@ -1,8 +1,9 @@
 // milk-coffee.jsx — 奶咖配方计算器 (primary). Implements the Excel formula live.
-const { useState: useStateMC } = React;
+import { useState } from 'react';
+import { Card, SectionLabel, Chip, Slider, Icon, fmt } from './shared';
 
 // coef = 打发膨胀系数，每个杯型有推荐默认值
-const CUP_PRESETS = [
+export const CUP_PRESETS = [
   { name: 'Cortado',    cn: '可塔朵',   vol: 120, n: 1.5, coef: 1.00, emoji: '☕' },
   { name: '短笛咖啡',    cn: 'Piccolo',  vol:  90, n: 2.0, coef: 1.10, emoji: '🥛' },
   { name: 'Flat White', cn: '馥芮白',   vol: 160, n: 3.0, coef: 1.15, emoji: '🤍' },
@@ -12,8 +13,8 @@ const CUP_PRESETS = [
   { name: 'Cappuccino', cn: '卡布奇诺', vol: 150, n: 3.0, coef: 1.40, emoji: '☕' },
 ];
 
-const VOLS  = [90, 120, 150, 160, 180, 200, 220, 250, 300, 350, 400];
-const COEFS = [1.00, 1.10, 1.15, 1.20, 1.25, 1.30, 1.40, 1.50];
+export const VOLS  = [90, 120, 150, 160, 180, 200, 220, 250, 300, 350, 400];
+export const COEFS = [1.00, 1.10, 1.15, 1.20, 1.25, 1.30, 1.40, 1.50];
 
 // ── 杯型预设 Chip（emoji + 中文名 + 容量·系数） ─────────────────────────────
 function CupChip({ preset, active, onClick }) {
@@ -76,10 +77,10 @@ function LegendDot({ color, label, value, unit }) {
 }
 
 // ── 主组件 ──────────────────────────────────────────────────────────────────
-function MilkCoffee() {
-  const [vol,  setVol]  = useStateMC(250);
-  const [n,    setN]    = useStateMC(4.0);
-  const [coef, setCoef] = useStateMC(1.25);
+export function MilkCoffee() {
+  const [vol,  setVol]  = useState(250);
+  const [n,    setN]    = useState(4.0);
+  const [coef, setCoef] = useState(1.25);
 
   // 配方公式
   const esp        = vol / (1 + coef * n);
@@ -242,5 +243,3 @@ function DetailRow({ label, formula, value, unit }) {
     </div>
   );
 }
-
-Object.assign(window, { MilkCoffee, CUP_PRESETS, VOLS, COEFS });

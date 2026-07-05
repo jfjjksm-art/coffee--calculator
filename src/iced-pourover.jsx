@@ -1,7 +1,8 @@
 // iced-pourover.jsx — 冰手冲配方 v2（物理热平衡模型）
 // 热平衡方程：H·Cp·(Tb−Tt) = I·(Lf + Cp·Tt)，H+I=W
 // 化简得：I = W·Cp·(Tb−Tt) / (Lf + Cp·Tb)
-const { useState: useStateIP } = React;
+import { useState } from 'react';
+import { Card, SectionLabel, Chip, Slider, Stepper, Icon, fmt } from './shared';
 
 const Cp = 4.186;  // 水的比热容 J/(g·℃)
 const Lf = 334;    // 冰的熔化热 J/g
@@ -61,15 +62,15 @@ function IcedGlassViz({ hotPct, icePct }) {
 }
 
 // ── 主组件 ──────────────────────────────────────────────────────────────────
-function IcedPourOver() {
-  const [dose,       setDose]       = useStateIP(20);
-  const [ratio,      setRatio]      = useStateIP(15);
-  const [tempHot,    setTempHot]    = useStateIP(92);
-  const [flavorMode, setFlavorMode] = useStateIP('balance');
-  const [tempTarget, setTempTarget] = useStateIP(10);
-  const [dripper,    setDripper]    = useStateIP('v60');
-  const [absorbCoef, setAbsorbCoef] = useStateIP(2.0);
-  const [tempCoef,   setTempCoef]   = useStateIP(0.84);
+export function IcedPourOver() {
+  const [dose,       setDose]       = useState(20);
+  const [ratio,      setRatio]      = useState(15);
+  const [tempHot,    setTempHot]    = useState(92);
+  const [flavorMode, setFlavorMode] = useState('balance');
+  const [tempTarget, setTempTarget] = useState(10);
+  const [dripper,    setDripper]    = useState('v60');
+  const [absorbCoef, setAbsorbCoef] = useState(2.0);
+  const [tempCoef,   setTempCoef]   = useState(0.84);
 
   function handleDripperChange(id) {
     setDripper(id);
@@ -349,5 +350,3 @@ function Step({ n, title, text }) {
     </div>
   );
 }
-
-Object.assign(window, { IcedPourOver });

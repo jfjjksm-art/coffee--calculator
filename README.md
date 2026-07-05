@@ -1,52 +1,53 @@
-# 咖啡计算器 · PWA 部署包
+# 咖啡计算器
 
-一个可安装、可离线使用的渐进式 Web 应用（PWA）。全屏、移动优先、iPhone 适配（含刘海安全区）。
+奶咖配方与冰手冲配方计算器。React + Vite 构建，同一份代码同时输出：
+- **网页版 PWA**（部署到 EdgeOne Pages 等静态托管）
+- **安卓离线 App**（Capacitor 打包 APK）
 
-## 文件
+## 目录结构
 ```
-pwa/
-├─ index.html              入口（已内置「焦糖金」主题 + Sora 字体）
-├─ app-pwa.jsx             全屏应用外壳 + 底部导航
-├─ shared.jsx              设计系统（调色板/字体/图标/基础组件）
-├─ milk-coffee.jsx         奶咖配方计算器
-├─ iced-pourover.jsx       冰手冲配方
-├─ presets.jsx             杯型预设对照
-├─ manifest.webmanifest    PWA 清单（名称/图标/主题色）
-├─ sw.js                   Service Worker（应用壳预缓存 + 离线）
-└─ icons/                  192 / 512 / maskable / apple-touch 图标
+src/
+├─ main.jsx            应用入口，注册字体
+├─ App.jsx              全屏应用外壳 + 底部导航
+├─ shared.jsx            设计系统（调色板/字体/图标/基础组件）
+├─ milk-coffee.jsx       奶咖配方计算器（含杯型预设）
+└─ iced-pourover.jsx     冰手冲配方（热平衡物理模型）
+public/
+├─ icons/                PWA 图标
+└─ manifest.webmanifest  PWA 清单
+android/                 Capacitor 生成的原生工程（已提交进仓库）
+.github/workflows/       GitHub Actions：push 后自动构建 debug APK
 ```
 
-## 如何部署
-PWA **必须通过 HTTPS** 提供（`localhost` 例外）。把整个 `pwa/` 目录作为静态站点根目录上传即可，零构建：
-
-- **GitHub Pages**：把 `pwa/` 内容推到仓库，开启 Pages。
-- **Netlify / Vercel / Cloudflare Pages**：拖拽 `pwa/` 文件夹部署，发布目录设为该文件夹。
-- **任意静态服务器 / 对象存储（OSS、S3）**：上传后用 HTTPS 访问 `index.html`。
-
-> `manifest.webmanifest`、`sw.js`、`icons/` 必须与 `index.html` 同级（同源、同目录），相对路径已配置好。
-
-## 本地预览
+## 本地开发
 ```bash
-cd pwa
-python3 -m http.server 8000      # 然后访问 http://localhost:8000
+npm install
+npm run dev        # http://localhost:5173
 ```
-（直接双击 `index.html` 用 `file://` 打开时 Service Worker 不会注册，属正常现象。）
 
-## 安装到手机
-- **iPhone（Safari）**：分享 → 「添加到主屏幕」。会以全屏独立应用启动，使用我们的金色咖啡杯图标。
-- **Android（Chrome）**：地址栏菜单 → 「安装应用 / 添加到主屏幕」。
+## 构建网页版
+```bash
+npm run build       # 产物在 dist/
+npm run preview      # 本地预览生产构建
+```
 
-## 离线
-首次联网打开后，Service Worker 会缓存应用壳、JSX 与 CDN 依赖（React / Babel / 字体）。之后断网也能打开使用。
-更新内容后，把 `sw.js` 里的 `CACHE = 'coffee-calc-v1'` 版本号 +1，即可让用户端刷新缓存。
+部署到 EdgeOne Pages：构建命令 `npm run build`，输出目录 `dist`。
 
-## 生产强化（可选，非必须）
-当前为「零构建」方案，在浏览器端用 Babel 实时编译 JSX，能直接部署。若追求更快首屏 / 更小体积：
-- 预编译 JSX（Vite / esbuild），去掉浏览器端 Babel；
-- 改用 React 生产版（`react.production.min.js`）；
-- 自托管字体，去掉对 Google Fonts 的外部依赖。
+## 构建安卓 APK
+
+### 方式一：GitHub Actions（无需本地环境）
+push 到 `main` 分支后自动触发，在仓库的 Actions 页面下载 `app-debug` 产物（debug 签名，安装前需在手机设置里允许"未知来源安装"）。
+
+### 方式二：本地构建
+需要 Android Studio（含 SDK）+ JDK 17：
+```bash
+npm run build && npx cap sync android
+npx cap open android      # 用 Android Studio 打开，运行到模拟器/真机
+```
+
+## 离线能力
+- **网页版**：`vite-plugin-pwa` 自动生成 Service Worker，首次联网访问后可离线打开。
+- **安卓 App**：Capacitor 把构建产物打进 APK，运行时从本地文件加载，天然离线，无需网络。
 
 ## 主题
-视觉定稿：**焦糖金（浅色）+ Sora 数字字体 + 圆角 20px**，已硬编码在 `index.html` 的 `:root` CSS 变量里。其余备选配色见 `shared.jsx` 的 `PALETTES`，需要时把对应值替换进 `:root` 即可。
-
-公式与组件规格详见上级目录的 `HANDOFF.md`。
+视觉定稿：**焦糖金（浅色）+ Sora 数字字体 + 圆角 20px**，CSS 变量定义在 `index.html` 的 `:root` 里。其余备选配色见 `src/shared.jsx` 的 `PALETTES`（当前未接入切换入口）。
