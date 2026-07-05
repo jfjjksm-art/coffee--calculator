@@ -9,16 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm ci
@@ -36,8 +36,10 @@ jobs:
         working-directory: android
         run: ./gradlew assembleDebug
 
+      # archive: false 直传裸 apk——下载到的就是 app-debug.apk 本体，
+      # 而不是再包一层 zip（zip 传到手机上装不了）
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: app-debug
+          archive: false
           path: android/app/build/outputs/apk/debug/app-debug.apk
